@@ -23,7 +23,7 @@ var (
 
 func main() {
 	clearScreen()
-	fmt.Println("\nEnter number:\n1. Session Report\n2. Audio Task Submission Report")
+	fmt.Println("\nEnter number:\n1. Session Report\n2. Audio Task Submission Report\n3. Link Schedule")
 	var choice int
 	fmt.Scanf("%d", &choice)
 	switch choice {
@@ -31,12 +31,47 @@ func main() {
 		createSessionReport()
 	case 2:
 		createAudioReport()
+	case 3:
+		createLinkScheduke()
 	default:
 		// fmt.Println("Invalid choice")
 		createSessionReport()
 	}
 }
 
+
+func createLinkScheduke() {
+	fmt.Println("Enter the time slot:	(Leave empty for ", meetingSlot, ")")
+	meetingSlot := getAlternative(meetingSlot)
+	fmt.Println("Enter the meeting link:")
+	var meetingLink string
+	fmt.Scanf("%s", &meetingLink)
+
+	//multi line string - do not misundertand
+	//====================================================
+	report :=
+		`✨Good morning All✨
+
+🎙Communication Session
+
+🌺Batch: ` + batchId + `
+👨🏽‍🏫Trainer: ` + trainer + `
+🕵🏽‍♂️Coordinator: ` + fmt.Sprint(coordinators[0]," & ",coordinators[1]) + `
+
+🖇Meeting link:` + meetingLink + `
+
+📆Date:- ` + time.Now().Format("January 02, 2006") + `
+
+⏰Time:- ` + meetingSlot
+		//====================================================
+
+	fmt.Println("Link Schedule:")
+	fmt.Println("===============================")
+	fmt.Println(report)
+	fmt.Println("===============================")
+
+	copyToClipboard(&report)
+}
 
 func createAudioReport() {
 	l1 := `*🎙 Audio task Submission Report*` + "\n\n"

@@ -1,0 +1,1 @@
+While marking attendance, put numbers seperated by space (not by comma, etc)
