@@ -23,7 +23,113 @@ var (
 
 func main() {
 	clearScreen()
-	createSessionReport()
+	fmt.Println("\nEnter number:\n1. Session Report\n2. Audio Task Submission Report")
+	var choice int
+	fmt.Scanf("%d", &choice)
+	switch choice {
+	case 1:
+		createSessionReport()
+	case 2:
+		createAudioReport()
+	default:
+		// fmt.Println("Invalid choice")
+		createSessionReport()
+	}
+}
+
+
+func createAudioReport() {
+	l1 := `*🎙 Audio task Submission Report*` + "\n\n"
+	l2 := `🌸 ` + batchId + "\n"
+	fmt.Println("Enter the date:    (Leave empty for today (", time.Now().Format("02/01/2006"), ")):")
+	date := getAlternative(time.Now().Format("02/01/2006") + "\n")
+	l3 := `📅 ` + date
+
+	var l4 string
+	fmt.Println("Enter the topic:(optional)")
+	topic := getAlternative("")
+	if topic != "" {
+		l4 = "\n" + `*🔖 Topic:* ` + topic
+	}
+
+	l5 := `*Submission status:*` + "\n"
+	for i, v := range members {
+		fmt.Println(i+1, ". ", v)
+	}
+
+	reader := bufio.NewReader(os.Stdin)
+
+	// fmt.Println("Enter the serial numbers of participants who submitted the task separated by spaces, enter any character to stop")
+	// submitters, err := reader.ReadString('\n')
+	// if err != nil {
+	// 	fmt.Println("Error in reading submitters:")
+	// 	panic(err)
+	// }
+	// submitters = strings.TrimSpace(submitters)
+	// submittersArr := strings.Split(submitters, " ")
+	// submittersMap := make(map[int]bool)
+	// if submittersArr[0] != "" {
+	// 	for _, v := range submittersArr {
+	// 		num, err := strconv.Atoi(v)
+	// 		if err != nil {
+	// 			panic(err)
+	// 		}
+	// 		submittersMap[num] = true
+	// 	}
+	// }
+	// var submissions string
+	// for i, v := range members {
+	// 	if submittersMap[i+1] {
+	// 		submissions += `✅ ` + v + "\n"
+	// 	} else {
+	// 		submissions += `❌ ` + v + "\n"
+	// 	}
+	// }
+
+	fmt.Println("Enter the serial numbers of participants who did not submit the task separated by spaces, enter any character to stop")
+	nonSubmitters, err := reader.ReadString('\n')
+	if err != nil {
+		fmt.Println("Error in reading non-submitters:")
+		panic(err)
+	}
+
+	nonSubmitters = strings.TrimSpace(nonSubmitters)
+	nonSubmittersArr := strings.Split(nonSubmitters, " ")
+	nonSubmittersMap := make(map[int]bool)
+
+	if nonSubmittersArr[0] != "" {
+		for _, v := range nonSubmittersArr {
+			num, err := strconv.Atoi(v)
+			if err != nil {
+				panic(err)
+			}
+			nonSubmittersMap[num] = true
+		}
+	}
+
+	var submissions string
+	for i, v := range members {
+		if nonSubmittersMap[i+1] {
+			submissions += `❌ ` + v + "\n"
+		} else {
+			submissions += `✅ ` + v + "\n"
+		}
+	}
+
+	fmt.Println("Enter the reporter's name:   (Enter nothing if by main coordinator)")
+	reporter := getAlternative(coordinators[0])
+
+	l6 := `✒️Report prepared by :` + "\n" + `    ` + reporter
+
+	report := l1 + l2 + l3 +
+		l4 + "\n" + l5 + submissions + "\n" + l6
+
+	fmt.Println("Audio Report:")
+	fmt.Println("===============================")
+	fmt.Println(report)
+	fmt.Println("===============================")
+
+	copyToClipboard(&report)
 }
 
 
